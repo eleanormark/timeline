@@ -1,0 +1,26 @@
+{
+  "name": "timeline",
+  "version": "0.0.0",
+  "description": "A D3 based timeline component",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --hot --inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Buzzalt/timeline.git"
+  },
+  "author": "Buzzalt, LLC",
+  "bugs": {
+    "url": "https://github.com/Buzzalt/timeline/issues"
+  },
+  "homepage": "https://github.com/Buzzalt/timeline#readme",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.4.0",
+    "html-webpack-plugin": "^2.28.0",
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.2"
+  }
+}
