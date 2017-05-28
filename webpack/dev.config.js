@@ -31,7 +31,7 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Element Anchor Playground',
+      title: 'Buzzalt Timeline Playground',
       template: 'playground/index.ejs'
     }),
     new webpack.NamedModulesPlugin()

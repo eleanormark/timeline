@@ -1,5 +1,5 @@
 import {assign} from 'lodash/object';
-import {isNumber} from 'lodash/lang';
+import {isNumber, cloneDeep} from 'lodash/lang';
 import {scaleTime} from 'd3-scale';
 import {axisTop, axisBottom} from 'd3-axis';
 import {mouse} from 'd3-selection';
@@ -9,19 +9,21 @@ import {crosshair} from './crosshair';
 const layout = (events) => {
   const rows = [];
 
+  events = cloneDeep(events);
+
   const layout = {
-    events: events.map(event => {
-      let index = rows.findIndex(row => event.start >= row);
-      if (index === -1) {
-        index = rows.length;
-      }
-      rows[index] = event.end;
-      return {
-        ...event,
-        selected: false,
-        row: index
-      };
-    })
+    events: events
+      .sort((a, b) => a.start - b.start)
+      .map(event => {
+        let index = rows.findIndex(row => event.start >= row);
+        if (index === -1) {
+          index = rows.length;
+        }
+        rows[index] = event.end;
+        event.selected = false;
+        event.row = index;
+        return event;
+      })
   };
 
   layout.rowCount = rows.length;
@@ -109,6 +111,8 @@ export const timeline = (options) => {
   };
 
   const instance = (selection) => {
+
+    selection.select('svg').remove();
 
     svg = selection.append('svg')
       .on('mouseleave', () => {
