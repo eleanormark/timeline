@@ -4,7 +4,8 @@ import {scaleTime} from 'd3-scale';
 import {axisTop, axisBottom} from 'd3-axis';
 import {mouse} from 'd3-selection';
 
-import {crosshair} from './crosshair';
+import crosshairRenderer from './crosshair';
+import eventRenderer from './events';
 
 const layout = (events) => {
   const rows = [];
@@ -65,7 +66,7 @@ export const timeline = (options) => {
     let height = options.height;
     if (height === 'auto') {
       height = options.margin.top + options.margin.bottom +
-        rowCount * (options.rowHeight + options.rowSpacing) + options.rowSpacing;
+        rowCount * (options.rowHeight + options.rowSpacing) + options.rowSpacing + 1;
     }
     svg.attr('height', height);
 
@@ -83,11 +84,12 @@ export const timeline = (options) => {
       .attr('transform', `translate(0, ${height - options.margin.bottom})`)
       .call(axisBottom(scale).tickSize(-3));
 
-    let rect = null;
+    // TODO: move to crosshair.js
+    let crosshairRect = null;
 
     if (options.crosshair && state.cursor) {
       const x = state.cursor.x;
-      rect = {
+      crosshairRect = {
         x: x,
         y: options.margin.top,
         width: 0,
@@ -95,19 +97,9 @@ export const timeline = (options) => {
       };
     }
 
-    group.call(crosshair, rect);
-
-    const update = group.selectAll('rect.event').data(events);
-
-    const enter = update.enter().append('rect')
-      .classed('event', true)
-      .attr('x', event => scale(event.start))
-      .attr('y', event => event.row * (options.rowHeight + options.rowSpacing) + options.rowSpacing + options.margin.top + 1)
-      .attr('width', event => scale(event.end) - scale(event.start))
-      .attr('height', event => options.rowHeight);
-
-    enter.merge(update)
-      .classed('selected', event => !!event.selected);
+    group
+      .call(crosshairRenderer, crosshairRect)
+      .call(eventRenderer, events, options, scale);
   };
 
   const instance = (selection) => {
@@ -132,11 +124,7 @@ export const timeline = (options) => {
         };
         const mouseTime = scale.invert(mouseX).getTime();
 
-        state.layout.events.forEach(event => {
-          event.selected = event.start <= mouseTime &&
-            event.end >= mouseTime;
-        });
-
+        selectEvents(state.layout.events, mouseTime);
         render();
       });
 
@@ -153,6 +141,13 @@ export const timeline = (options) => {
       .classed('axis-bottom', true);
 
     render();
+  };
+
+  const selectEvents = (events, time) => {
+    events.forEach(event => {
+      event.selected = event.start <= time &&
+        event.end >= time;
+    });
   };
 
   return assign(instance, {

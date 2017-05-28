@@ -38,6 +38,40 @@
         </div>
         <p class="title"><code>@buzzalt/timeline</code> playground</p>
         <div class="col-md-3">
+          <div class="form-group">
+            <label for="start">From</label>
+            <input type="text" class="form-control" id="start"/>
+            <span class="help-block">
+              MM/DD/YYYY HH:mm:ss
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="end">To</label>
+            <input type="text" class="form-control" id="end"/>
+            <span class="help-block">
+              MM/DD/YYYY HH:mm:ss
+            </span>
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="fakeData" checked> Fake Data
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="file">Events</label>
+            <input type="file" id="file"/>
+            <span class="help-block">
+              A CSV file with 'start' and 'end' fields.
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="rowHeight">Row Height</label>
+            <input type="text" class="form-control" id="rowHeight" value="16"/>
+          </div>
+          <div class="form-group">
+            <label for="rowSpacing">Row Spacing</label>
+            <input type="text" class="form-control" id="rowSpacing" value="4"/>
+          </div>
         </div>
         <div class="col-md-9">
           <div id="root" class="root">

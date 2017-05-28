@@ -1,4 +1,4 @@
-export const crosshair = (selection, rect) => {
+export default (selection, rect) => {
   const crosshair = selection.selectAll('g.crosshair').data(rect ? [rect] : []);
 
   crosshair.exit().remove();

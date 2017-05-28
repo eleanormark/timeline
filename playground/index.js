@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { select } from 'd3-selection';
+import {select, selectAll} from 'd3-selection';
 import {randomUniform} from 'd3-random';
+import {csvParse} from 'd3-dsv';
+import moment from 'moment';
 import 'd3-transition';
 
 import './styles/common.css';
@@ -38,17 +40,44 @@ const generate = (number, rangeStart, rangeEnd) => {
   return events;
 };
 
+const dateFormat = 'MM/DD/YYYY HH:mm:ss';
+
+const startEl = document.getElementById('start');
+const endEl = document.getElementById('end');
+// last hour
+const end = Date.now();
+const start = end - 1000 * 60 * 60;
+startEl.value = moment(start).format(dateFormat);
+endEl.value = moment(end).format(dateFormat);
+let events = generate(50, start, end);
+
+const fakeDataEl = document.getElementById('fakeData');
+const rowHeightEl = document.getElementById('rowHeight');
+const rowSpacingEl = document.getElementById('rowSpacing');
+
 const bootstrap = (app) => {
-  return () => {
+  return ({
+    start = startEl.value,
+    end = endEl.value,
+    rowHeight = rowHeightEl.value,
+    rowSpacing = rowSpacingEl.value
+  } = {}) => {
     try {
-      const end = Date.now();
-      const start = end - 1000 * 60 * 60;
-      // generate and render 50 events in the last hour
-      const events = generate(50, start, end);
+      start = moment(start, dateFormat).toDate();
+      end = moment(end, dateFormat).toDate();
 
-      const chart = app.timeline();
+      const chart = app.timeline()
+        .mapper(events => events.map(({start, end}) => {
+          start = +start;
+          end = +end;
+          return {start, end};
+        }))
+        .events(events)
+        .rowSpacing(Number(rowSpacing))
+        .rowHeight(Number(rowHeight))
+        .range(start, end);
 
-      select('#root').call(chart.events(events).range(start, end));
+      select('#root').call(chart);
     }
     catch (err) {
       console.error(err.message);
@@ -71,3 +100,59 @@ if (module.hot) {
     update();
   });
 }
+
+const fileEl = document.getElementById('file');
+
+fileEl.addEventListener('change', () => {
+  alertEl.transition().duration(300).style('opacity', 0);
+  try {
+    const file = fileEl.files[0];
+    const textType = /text.*/;
+
+    if (file.type.match(textType)) {
+      const reader = new FileReader();
+
+      reader.addEventListener('load', () => {
+        events = csvParse(reader.result);
+        fakeDataEl.checked = false;
+        update();
+      });
+
+      reader.readAsText(file);
+    }
+    else {
+      throw new Error("File type is not supported!");
+    }
+  }
+  catch (err) {
+    console.error(err.message);
+    alertEl.html(err.message).transition().duration(200).style('opacity', 1);
+  }
+});
+
+selectAll('#start, #end, #rowHeight, #rowSpacing')
+  .on('keydown', () => {
+    const isVisible = alertEl.style('opacity') === '1';
+    if (isVisible) {
+      alertEl.transition().duration(300).style('opacity', 0);
+    }
+  })
+  .on('change', function() {
+    update({
+      [this.id]: event.target.value
+    });
+  });
+
+select('#fakeData')
+  .on('change', function() {
+    const isFakeData = event.target.checked;
+    if (isFakeData) {
+      const start = moment(startEl.value, dateFormat).toDate();
+      const end = moment(endEl.value, dateFormat).toDate();
+      events = generate(50, start, end);
+    }
+    else {
+      events = [];
+    }
+    update();
+  });
