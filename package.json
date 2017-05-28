@@ -1,26 +1,45 @@
 {
   "name": "timeline",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A D3 based timeline component",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --hot --inline"
+    "start": "webpack-dev-server --config webpack/dev.config.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Buzzalt/timeline.git"
   },
+  "keywords": [
+    "d3",
+    "timeline"
+  ],
   "author": "Buzzalt, LLC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/Buzzalt/timeline/issues"
   },
   "homepage": "https://github.com/Buzzalt/timeline#readme",
   "devDependencies": {
+    "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.4.0",
+    "css-loader": "^0.28.3",
+    "d3-random": "^1.1.0",
+    "file-loader": "^0.11.1",
     "html-webpack-plugin": "^2.28.0",
+    "style-loader": "^0.18.1",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2"
+  },
+  "dependencies": {
+    "d3-axis": "^1.0.7",
+    "d3-dispatch": "^1.0.3",
+    "d3-scale": "^1.0.6",
+    "d3-selection": "^1.1.0",
+    "d3-transition": "^1.1.0",
+    "lodash": "^4.17.4"
   }
 }

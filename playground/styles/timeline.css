@@ -1,0 +1,27 @@
+svg {
+    border: 1px solid lightgrey;
+    width: 100%;
+    shape-rendering: crispEdges;
+}
+
+.event {
+    fill: #82DBF9;
+}
+
+.event:hover {
+    fill: #F69CDB;
+}
+
+.crosshair line,
+.axis path,
+.axis line {
+    stroke: #8192A1;
+}
+
+.axis text {
+    fill: #8192A1;
+}
+
+.event.selected {
+    fill: #F69CDB;
+}
