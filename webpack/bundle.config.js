@@ -37,7 +37,7 @@ module.exports = {
       debug: false
     }),
     new HtmlWebpackPlugin({
-      title: 'Element Anchor Playground',
+      title: 'Timeline Playground',
       template: 'playground/index.ejs'
     }),
     new webpack.optimize.UglifyJsPlugin({
