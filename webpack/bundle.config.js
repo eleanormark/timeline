@@ -37,7 +37,7 @@ module.exports = {
       debug: false
     }),
     new HtmlWebpackPlugin({
-      title: 'Timeline Playground',
+      title: 'Buzzalt Timeline Playground',
       template: 'playground/index.ejs'
     }),
     new webpack.optimize.UglifyJsPlugin({
