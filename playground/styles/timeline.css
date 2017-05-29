@@ -25,3 +25,15 @@ svg {
 .event.selected {
     fill: #F69CDB;
 }
+
+.tooltip {
+  position: absolute;
+  color: white;
+  background: rgba(129,146,161, 0.8);
+  padding: 8px;
+  width: 120px;
+  font-family: Helvetica;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}

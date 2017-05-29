@@ -3,6 +3,7 @@ import {isNumber, cloneDeep} from 'lodash/lang';
 import {scaleTime} from 'd3-scale';
 import {axisTop, axisBottom} from 'd3-axis';
 import {mouse} from 'd3-selection';
+import {factory} from '@buzzalt/tooltip';
 
 import crosshairRenderer from './crosshair';
 import eventRenderer from './events';
@@ -54,7 +55,7 @@ export const timeline = (options) => {
     cursor: null
   };
 
-  let svg, group, scale;
+  let svg, group, scale, tooltip;
 
   const render = () => {
 
@@ -84,7 +85,7 @@ export const timeline = (options) => {
       .attr('transform', `translate(0, ${height - options.margin.bottom})`)
       .call(axisBottom(scale).tickSize(-3));
 
-    // TODO: move to crosshair.js
+    // TODO: refactor
     let crosshairRect = null;
 
     if (options.crosshair && state.cursor) {
@@ -95,10 +96,31 @@ export const timeline = (options) => {
         width: 0,
         height: clientRect.height - options.margin.top - options.margin.bottom
       };
+
+      if (tooltip) {
+        tooltip.hide();
+      }
+      tooltip = factory()
+        .template(data => {
+          const date = new Date(data.time);
+          return `
+            <span>${date.getMonth()}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}</span>
+            <br>
+            <span>Events: ${data.selectedCount}</span>
+          `;
+        })
+        .client('#root')
+        .create('south-east')
+        .anchor('top', 'right')
+        .fallback('south-west')
+        .anchor('top', 'left');
     }
 
     group
-      .call(crosshairRenderer, crosshairRect)
+      .call(crosshairRenderer, crosshairRect, tooltip, {
+        time: state.time,
+        selectedCount: state.selectedCount
+      })
       .call(eventRenderer, events, options, scale);
   };
 
@@ -114,6 +136,9 @@ export const timeline = (options) => {
           event.selected = false;
         });
 
+        state.selectedCount = 0;
+        state.time = null;
+
         render();
       })
       .on('mousemove', function() {
@@ -124,7 +149,8 @@ export const timeline = (options) => {
         };
         const mouseTime = scale.invert(mouseX).getTime();
 
-        selectEvents(state.layout.events, mouseTime);
+        state.selectedCount = selectEvents(state.layout.events, mouseTime);
+        state.time = mouseTime;
         render();
       });
 
@@ -144,10 +170,13 @@ export const timeline = (options) => {
   };
 
   const selectEvents = (events, time) => {
+    let selectedCount = 0;
     events.forEach(event => {
       event.selected = event.start <= time &&
         event.end >= time;
+      selectedCount += event.selected;
     });
+    return selectedCount;
   };
 
   return assign(instance, {
