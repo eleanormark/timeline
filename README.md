@@ -1,16 +1,7 @@
-# timeline
+# @buzzalt/timeline
 
-```javascript
-import {timeline} from '@buzzalt/timeline';
+### WARNING: work in progress, API is unstable!
 
-const events = [{
-  start: '',
-  end: ''
-}, {
-  start: '',
-  end: ''
-}]; 
+![timeline](/resources/buzzalt-timeline.png?raw=true "The sample timeline")
 
-d3.select('#root')
-  .call(timeline().events(events));
-```
+See the demo [here](http://buzzalt.io/demos/timeline/index.html).
