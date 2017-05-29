@@ -1,4 +1,5 @@
 import {assign} from 'lodash/object';
+import {padStart} from 'lodash/string';
 import {isNumber, cloneDeep} from 'lodash/lang';
 import {scaleTime} from 'd3-scale';
 import {axisTop, axisBottom} from 'd3-axis';
@@ -102,9 +103,16 @@ export const timeline = (options) => {
       }
       tooltip = factory()
         .template(data => {
+          // TODO: refactor
           const date = new Date(data.time);
+          const month = date.getMonth();
+          const day = date.getDate();
+          const year = date.getFullYear();
+          const hours = padStart(date.getHours(), 2, '0');
+          const minutes = padStart(date.getMinutes(), 2, '0');
+          const seconds = padStart(date.getSeconds(), 2, '0');
           return `
-            <span>${date.getMonth()}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}</span>
+            <span>${month}/${day}/${year} ${hours}:${minutes}:${seconds}</span>
             <br>
             <span>Events: ${data.selectedCount}</span>
           `;
