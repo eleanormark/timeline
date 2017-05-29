@@ -5,3 +5,5 @@
 ![timeline](/resources/buzzalt-timeline.png?raw=true "The sample timeline")
 
 See the demo [here](http://buzzalt.io/demos/timeline/index.html).
+
+License: Apache 2.0.
